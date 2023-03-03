@@ -1,6 +1,6 @@
 #!/bin/bash
-# Make sure sript is executable with chmod +x run_tests.sh. 
-# Finally, run the script with ./run_tests.sh.
+# Make sure script is executable with chmod +x test_driver.sh. 
+# Finally, run the script with ./test_driver.sh.
 
 # Compile the gitm program
 gcc -o gitm gitm.c
