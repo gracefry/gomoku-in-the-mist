@@ -6,13 +6,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-const int BOARD_SIZE = 20;
+const int BOARD_SIZE = 19;
 const int MAX_HISTORY = 50;
-char board[20][20];
+char board[19][19];
 char command[256];
 int game_over = 0;
 int turn = 0;
-char history[256][4];
+char history[362][4];
 int hist_i = 0;
 
 void makeBoard() {
@@ -179,10 +179,7 @@ int isWon(int num_c, int r, char player) {
     }
 }
 
-void victory(char player) {
-    char* name = (player == 'W') ? "White" : "Black";
-
-    printf("%s wins!\n", name);
+void endGame() {
     printHistory();
     printf("Thank you for playing!\n");
     game_over = 1;
@@ -191,7 +188,7 @@ void victory(char player) {
 void resign() {
     turn++;
     char player = who(turn);
-    victory(player);
+    endGame(player);
 }
 
 void place(char c, int r, char player) {
@@ -230,8 +227,9 @@ void place(char c, int r, char player) {
         // printf("not win\n");
         turn++;
     } else {
-        // printf("win\n");
-        victory(player);
+        char* name = (player == 'W') ? "White" : "Black";
+        printf("%s wins!\n", name);
+        endGame();
     }
 }
 
@@ -241,6 +239,13 @@ int main(int argc, char* argv[]) {
     while (!game_over) {
         fgets(command, 256, stdin);
         char player = who(turn);
+
+        // tie
+        if (turn == 362) {
+            printf("Wow, a tie!\n");
+            printHistory();
+            endGame();
+        }
 
         // command switcher
         if (!strncmp(command, "term", 4)) {
@@ -266,7 +271,6 @@ int main(int argc, char* argv[]) {
         } else {
             printf("Invalid!\n");
         }
-        // game_over = 1;
     }
 
     return 0;
