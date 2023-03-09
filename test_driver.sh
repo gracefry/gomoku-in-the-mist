@@ -17,12 +17,14 @@ for test_input in tests/*.in; do
     # Compare the program output to the expected output
     if diff -q "$test_output" <(echo "$program_output"); then
         # If they are the same, the test passed
-        echo "$test_input passed"
+        echo "✅ $test_input passed ✅"
     else
         # If they are different, print the difference
-        echo "$test_input failed:"
+        echo "❌ $test_input failed:"
         diff "$test_output" <(echo "$program_output")
     fi
+
+    echo "_____________________________________________________________________"
     
 done
 
