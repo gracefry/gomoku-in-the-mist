@@ -12,8 +12,8 @@ int game_over = 0;
 int turn = 0;
 
 void makeBoard() {
-    for (int i = 0; i <= 20; i++) {
-        for (int j = 0; j <= 20; j++) {
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < 20; j++) {
             board[i][j] = '.';
         }
     }
