@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-const int BOARD_SIZE = 19;
+const int BOARD_SIZE = 20;
 const int MAX_HISTORY = 50;
 char board[19][19];
 char command[256];
