@@ -241,14 +241,6 @@ int main(int argc, char* argv[]) {
         fgets(command, 256, stdin);
         char player = who(turn);
 
-        // tie
-        if (turn == 361) {
-            printf("Wow, a tie!\n");
-            printHistory();
-            printf("Thank you for playing!\n");
-            game_over = 1;
-        }
-
         // command switcher
         if (!strncmp(command, "term", 4)) {
             term();
@@ -272,6 +264,14 @@ int main(int argc, char* argv[]) {
 
         } else {
             printf("Invalid!\n");
+        }
+
+        // tie
+        if (turn == 361) {
+            printf("Wow, a tie!\n");
+            printHistory();
+            printf("Thank you for playing!\n");
+            game_over = 1;
         }
     }
 
