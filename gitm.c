@@ -219,13 +219,15 @@ void place(char c, int r, char player) {
         board[num_c][r] = 'o';
     }
 
+    // Add to history
+    char coord[4]; 
+    sprintf(coord,"%c%d", c, r);
+    strcpy(history[hist_i], coord);
+    hist_i++;
+
     // Check win
     if (!isWon(num_c, r, player)) {
         // printf("not win\n");
-        char coord[4]; 
-        sprintf(coord,"%c%d", c, r);
-        strcpy(history[hist_i], coord);
-        hist_i++;
         turn++;
     } else {
         // printf("win\n");
