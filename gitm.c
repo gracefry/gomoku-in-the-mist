@@ -242,7 +242,7 @@ int main(int argc, char* argv[]) {
         char player = who(turn);
 
         // tie
-        if (turn == 360) {
+        if (turn == 361) {
             printf("Wow, a tie!\n");
             printHistory();
             printf("Thank you for playing!\n");
