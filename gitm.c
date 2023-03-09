@@ -7,10 +7,13 @@
 #include <stdlib.h>
 
 const int BOARD_SIZE = 20;
+const int MAX_HISTORY = 50;
 char board[20][20];
 char command[256];
 int game_over = 0;
 int turn = 0;
+char history[256][4];
+int hist_i = 0;
 
 void makeBoard() {
     for (int col = 0; col < BOARD_SIZE; col++) {
@@ -18,6 +21,13 @@ void makeBoard() {
             board[col][row] = '.';
         }
     }
+}
+
+void printHistory() {
+    for (int i = 0; i < hist_i; i++) {
+        printf("%s", history[i]);
+    }
+    printf("\n");
 }
 
 void term() {
@@ -173,6 +183,7 @@ void victory(char player) {
     char* name = (player == 'W') ? "White" : "Black";
 
     printf("%s wins!\n", name);
+    printHistory();
     printf("Thank you for playing!\n");
     game_over = 1;
 }
@@ -211,6 +222,10 @@ void place(char c, int r, char player) {
     // Check win
     if (!isWon(num_c, r, player)) {
         // printf("not win\n");
+        char coord[4]; 
+        sprintf(coord,"%c%d", c, r);
+        strcpy(history[hist_i], coord);
+        hist_i++;
         turn++;
     } else {
         // printf("win\n");
@@ -230,6 +245,8 @@ int main(int argc, char* argv[]) {
             term();
         } else if (!strncmp(command, "who", 3)) {
             printf("%c\n", player);
+        } else if (!strncmp(command, "history", 7)) {
+            printHistory();
         } else if (!strncmp(command, "resign", 6)) {
             resign();
         } else if (!strncmp(command, "place", 5)) {
