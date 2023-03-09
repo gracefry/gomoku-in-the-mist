@@ -6,45 +6,18 @@
 #include <string.h>
 #include <stdlib.h>
 
+const int BOARD_SIZE = 20;
 char board[20][20];
 char command[256];
 int game_over = 0;
 int turn = 0;
 
 void makeBoard() {
-    for (int i = 0; i < 20; i++) {
-        for (int j = 0; j < 20; j++) {
-            board[i][j] = '.';
+    for (int col = 0; col < BOARD_SIZE; col++) {
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            board[col][row] = '.';
         }
     }
-}
-
-int place(char c, int r, char player) {
-    int num_c = c - 'A' + 1;
-
-    // Check column and row validity
-    if ((num_c < 1 || num_c > 19) || (r < 1 || r > 19)) {
-        printf("Invalid coordinate\n");
-        // printf("inval %d, %d", num_c, r);
-        return 1;
-    } 
-
-    // Check occupancy
-    if (board[num_c][r] != '.') {
-        printf("Occupied coordinate\n");
-        return 1;
-    }
-    
-    // Place according to player
-    if (player == 'B') {
-        board[num_c][r] = '#';
-        // printf("black %d, %d", num_c, r);
-    } else {
-        board[num_c][r] = 'o';
-    }
-
-    turn++;
-    return 0;
 }
 
 void term() {
@@ -84,10 +57,171 @@ char who(int turn) {
     return player;
 }
 
+int isWon(int num_c, int r, char player) {
+    int count = 1;
+    char moku = (player == 'W') ? 'o' : '#';
+
+    // Check vertical increasing
+    for (int row = (r + 1); row < (r + 5) || row < BOARD_SIZE; row++) {
+        // printf("Check vertical increasing\n");
+        if (board[num_c][row] == moku) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    // Check vertical decreasing
+    for (int row = (r - 1); row < (r - 5) || row < BOARD_SIZE; row--) {
+        // printf("Check vertical decreasing\n");
+        if (board[num_c][row] == moku) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    if (count == 5) {
+        return 1;
+    } else {
+        count = 1;
+    }
+    
+
+    // Check horizontal increasing
+    for (int col = (num_c + 1); col < (num_c + 5) || col < BOARD_SIZE; col++) {
+        if (board[col][r] == moku) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    // Check horizontal decreasing
+    for (int col = (num_c - 1); col < (num_c - 5) || col >= 0; col--) {
+        if (board[col][r] == moku) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    if (count == 5) {
+        return 1;
+    } else {
+        count = 1;
+    }
+
+    // Check diagonal SE
+    for (int col = (num_c + 1), row = (r + 1); 
+        col < (num_c) + 5 && col < BOARD_SIZE && row < BOARD_SIZE && row < (r + 5); 
+        col++, row++) {
+        if (board[col][row] == moku) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    // Check diagonal NW
+    for (int col = num_c - 1, row = (r - 1); 
+        col > num_c - 5 && col >= 0 && row >= 0 && row > (r - 5); 
+        col--, row--) {
+        if (board[col][row] == moku) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    if (count == 5) {
+        return 1;
+    } else {
+        count = 1;
+    }
+
+    // Check diagonal SW
+    for (int col = (num_c - 1), row = (r + 1); 
+        col > (num_c - 5) && col >= 0 && row < BOARD_SIZE && row < (r + 5); 
+        col--, row++) {
+        if (board[col][row] == moku) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    // Check diagonal NE
+    for (int col = (num_c + 1), row = (r - 1); 
+        col < (num_c + 5) && col < BOARD_SIZE && row > (r - 5) && row >= 0; 
+        col++, row--) {
+        if (board[col][row] == moku) {
+            count++;
+        } else {
+            break;
+        }
+    }
+
+    if (count == 5) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+void victory(char player) {
+    char* name = (player == 'W') ? "White" : "Black";
+
+    printf("%s wins!\n", name);
+    printf("Thank you for playing!\n");
+    game_over = 1;
+}
+
+void resign() {
+    turn++;
+    char player = who(turn);
+    victory(player);
+}
+
+void place(char c, int r, char player) {
+    int num_c = c - 'A';
+
+    // Check column and row validity
+    if ((num_c < 0 || num_c >= BOARD_SIZE) || 
+        (r < 0 || r >= BOARD_SIZE)) {
+        printf("Invalid coordinate\n");
+        // printf("inval %d, %d", num_c, r);
+        return;
+    } 
+
+    // Check occupancy
+    if (board[num_c][r] != '.') {
+        printf("Occupied coordinate\n");
+        return;
+    }
+    
+    // Place according to player
+    if (player == 'B') {
+        board[num_c][r] = '#';
+        // printf("black %d, %d", num_c, r);
+    } else {
+        board[num_c][r] = 'o';
+    }
+
+    // Check win
+    if (!isWon(num_c, r, player)) {
+        // printf("not win\n");
+        turn++;
+    } else {
+        // printf("win\n");
+        victory(player);
+    }
+}
+
 int main(int argc, char* argv[]) {
     makeBoard();
 
-    while (game_over == 0) {
+    while (!game_over) {
         fgets(command, 256, stdin);
         char player = who(turn);
 
@@ -96,6 +230,8 @@ int main(int argc, char* argv[]) {
             term();
         } else if (!strncmp(command, "who", 3)) {
             printf("%c\n", player);
+        } else if (!strncmp(command, "resign", 6)) {
+            resign();
         } else if (!strncmp(command, "place", 5)) {
             char c = command[6];
             int r = 0;
