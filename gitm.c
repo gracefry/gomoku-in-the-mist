@@ -7,8 +7,7 @@
 #include <stdlib.h>
 
 const int BOARD_SIZE = 20;
-const int MAX_HISTORY = 50;
-char board[19][19];
+char board[20][20];
 char command[256];
 int game_over = 0;
 int turn = 0;
