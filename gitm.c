@@ -179,7 +179,10 @@ int isWon(int num_c, int r, char player) {
     }
 }
 
-void endGame() {
+void victory(char player) {
+    char* name = (player == 'W') ? "White" : "Black";
+
+    printf("%s wins!\n", name);
     printHistory();
     printf("Thank you for playing!\n");
     game_over = 1;
@@ -188,7 +191,7 @@ void endGame() {
 void resign() {
     turn++;
     char player = who(turn);
-    endGame(player);
+    victory(player);
 }
 
 void place(char c, int r, char player) {
@@ -227,9 +230,8 @@ void place(char c, int r, char player) {
         // printf("not win\n");
         turn++;
     } else {
-        char* name = (player == 'W') ? "White" : "Black";
-        printf("%s wins!\n", name);
-        endGame();
+        // printf("win\n");
+        victory(player);
     }
 }
 
@@ -244,7 +246,8 @@ int main(int argc, char* argv[]) {
         if (turn == 362) {
             printf("Wow, a tie!\n");
             printHistory();
-            endGame();
+            printf("Thank you for playing!\n");
+            game_over = 1;
         }
 
         // command switcher
