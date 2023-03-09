@@ -24,14 +24,14 @@ int place(char c, int r, char player) {
 
     // Check column and row validity
     if ((num_c < 1 || num_c > 19) || (r < 1 || r > 19)) {
-        printf("Invalid coordinate");
+        printf("Invalid coordinate\n");
         // printf("inval %d, %d", num_c, r);
         return 1;
     } 
 
     // Check occupancy
     if (board[num_c][r] != '.') {
-        printf("Occupied coordinate");
+        printf("Occupied coordinate\n");
         return 1;
     }
     
@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
         if (!strncmp(command, "term", 4)) {
             term();
         } else if (!strncmp(command, "who", 3)) {
-            printf("%c", player);
+            printf("%c\n", player);
         } else if (!strncmp(command, "place", 5)) {
             char c = command[6];
             int r = 0;
@@ -111,7 +111,6 @@ int main(int argc, char* argv[]) {
         } else {
             printf("Invalid!\n");
         }
-        printf("\n");
         // game_over = 1;
     }
 
