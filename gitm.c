@@ -8,11 +8,15 @@
 
 const int BOARD_SIZE = 20;
 char board[20][20];
+
 char command[256];
 int game_over = 0;
 int turn = 0;
+
 char history[362][4];
 int hist_i = 0;
+
+int mist_centre[2] = {10, 10}; // Starts in middle
 
 void makeBoard() {
     for (int col = 0; col < BOARD_SIZE; col++) {
@@ -55,15 +59,8 @@ char who(int turn) {
     *       char 'B' for black, or
     *       char 'W' for white
     */
-    char player;
 
-    if (turn % 2 == 0) {
-        player = 'B';
-    } else {
-        player = 'W';
-    }
-
-    return player;
+    return (turn % 2 == 0) ? 'B' : 'W';;
 }
 
 int isWon(int num_c, int r, char player) {
@@ -71,7 +68,8 @@ int isWon(int num_c, int r, char player) {
     char moku = (player == 'W') ? 'o' : '#';
 
     // Check vertical increasing
-    for (int row = (r + 1); row < (r + 5) || row < BOARD_SIZE; row++) {
+    for (int row = (r + 1); 
+        row < (r + 5) || row < BOARD_SIZE; row++) {
         // printf("Check vertical increasing\n");
         if (board[num_c][row] == moku) {
             count++;
@@ -81,7 +79,8 @@ int isWon(int num_c, int r, char player) {
     }
 
     // Check vertical decreasing
-    for (int row = (r - 1); row < (r - 5) || row < BOARD_SIZE; row--) {
+    for (int row = (r - 1); 
+        row > (r - 5) && row >= 0; row--) {
         // printf("Check vertical decreasing\n");
         if (board[num_c][row] == moku) {
             count++;
@@ -98,7 +97,8 @@ int isWon(int num_c, int r, char player) {
     
 
     // Check horizontal increasing
-    for (int col = (num_c + 1); col < (num_c + 5) || col < BOARD_SIZE; col++) {
+    for (int col = (num_c + 1); 
+        col > (num_c + 5) && col < BOARD_SIZE; col++) {
         if (board[col][r] == moku) {
             count++;
         } else {
@@ -107,7 +107,8 @@ int isWon(int num_c, int r, char player) {
     }
 
     // Check horizontal decreasing
-    for (int col = (num_c - 1); col < (num_c - 5) || col >= 0; col--) {
+    for (int col = (num_c - 1); 
+        col > (num_c - 5) && col >= 0; col--) {
         if (board[col][r] == moku) {
             count++;
         } else {
@@ -194,7 +195,7 @@ void resign() {
 }
 
 void place(char c, int r, char player) {
-    int num_c = c - 'A';
+    int num_c = c - 'A' + 1;
 
     // Check column and row validity
     if ((num_c < 0 || num_c >= BOARD_SIZE) || 
@@ -224,6 +225,14 @@ void place(char c, int r, char player) {
     strcpy(history[hist_i], coord);
     hist_i++;
 
+    // Update mist centre
+    // printf("%c is c, %d is num_c\n", c, num_c);
+    int mist_col = 1 + (5 * (num_c * num_c) + 3 * num_c + 4) % 19;
+    int mist_row = 1 + (4 * (r * r) + 3 * r - 4) % 19;
+    mist_centre[0] = mist_col;
+    mist_centre[1] = mist_row;
+    // printf("mc %d, %d \n", mist_centre[0], mist_centre[1]);
+
     // Check win
     if (!isWon(num_c, r, player)) {
         // printf("not win\n");
@@ -232,6 +241,26 @@ void place(char c, int r, char player) {
         // printf("win\n");
         victory(player);
     }
+}
+
+void view() {
+    int mist_col = mist_centre[0];
+    char c_mist_col = mist_col + 'A' - 1;
+    int mist_row = mist_centre[1];
+    printf("%c%d,", c_mist_col, mist_row);
+
+    for (int col = mist_col - 3; col < mist_col + 3; col++) {
+        for (int row = mist_row - 3; row < mist_row + 3; row++) {
+            if (col < 0 || col >= BOARD_SIZE ||
+                row < 0 || row >= BOARD_SIZE) {
+                printf("x");
+            } else {
+                printf("%c", board[col][row]);
+            }
+        }
+    }
+
+    printf("\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -248,6 +277,8 @@ int main(int argc, char* argv[]) {
             printf("%c\n", player);
         } else if (!strncmp(command, "history", 7)) {
             printHistory();
+        } else if (!strncmp(command, "view", 4)) {
+            view();
         } else if (!strncmp(command, "resign", 6)) {
             resign();
         } else if (!strncmp(command, "place", 5)) {
