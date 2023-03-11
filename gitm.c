@@ -19,8 +19,8 @@ int hist_i = 0;
 int mist_centre[2] = {10, 10}; // Starts in middle
 
 void makeBoard() {
-    for (int col = 1; col < BOARD_SIZE; col++) {
-        for (int row = 1; row < BOARD_SIZE; row++) {
+    for (int col = 1; col <= BOARD_SIZE; col++) {
+        for (int row = 1; row <= BOARD_SIZE; row++) {
             board[col][row] = '.';
         }
     }
@@ -252,12 +252,13 @@ void view() {
     
     for (int row = mist_row + 3; row >= mist_row - 3; row--) {
         for (int col = mist_col - 3; col <= mist_col + 3; col++) {
-            if (col < 1 || col >= BOARD_SIZE ||
-                row < 1 || row >= BOARD_SIZE) {
+            if (col < 1 || col > BOARD_SIZE ||
+                row < 1 || row > BOARD_SIZE) {
                 printf("x");
-            } else {
                 // printf("this is column %d row %d\n", col, row);
+            } else {
                 printf("%c", board[col][row]);
+                // printf("this is column %d row %d\n", col, row);
             }
         }
     }
