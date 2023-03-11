@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 const int BOARD_SIZE = 19;
-char board[19][19];
+char board[20][20];
 
 char command[256];
 int game_over = 0;
@@ -19,8 +19,8 @@ int hist_i = 0;
 int mist_centre[2] = {10, 10}; // Starts in middle
 
 void makeBoard() {
-    for (int col = 0; col < BOARD_SIZE; col++) {
-        for (int row = 0; row < BOARD_SIZE; row++) {
+    for (int col = 1; col < BOARD_SIZE; col++) {
+        for (int row = 1; row < BOARD_SIZE; row++) {
             board[col][row] = '.';
         }
     }
@@ -195,7 +195,7 @@ void resign() {
 }
 
 void place(char c, int r, char player) {
-    int num_c = c - 'A';
+    int num_c = c - 'A' + 1;
     // r = r - 1;
 
     // Check column and row validity
@@ -249,31 +249,43 @@ void view() {
     char c_mist_col = mist_col + 'A' - 1;
     int mist_row = mist_centre[1];
     printf("%c%d,", c_mist_col, mist_row);
-
     
-    // for (int row = mist_row + 3; row >= mist_row - 3; row--) {
-    //     for (int col = mist_col - 3; col <= mist_col + 3; col++) {
-    //         if (col < 0 || col >= BOARD_SIZE ||
-    //             row < 0 || row >= BOARD_SIZE) {
-    //             printf("x");
-    //         } else {
-    //             // printf("this is column %d row %d\n", col, row);
-    //             printf("%c", board[col][row]);
-    //         }
-    //     }
-    // }
-
-    for (int row = mist_row + 2; row >= mist_row - 4; row--) {
-        // printf("%2d ", row); // Print row number
-        for (int col = mist_col + 2; col >= mist_col - 4; col--) {
-            if (col < 0 || col >= BOARD_SIZE || row < 0 || row >= BOARD_SIZE) {
+    for (int row = mist_row + 3; row >= mist_row - 3; row--) {
+        for (int col = mist_col - 3; col <= mist_col + 3; col++) {
+            if (col < 1 || col >= BOARD_SIZE ||
+                row < 1 || row >= BOARD_SIZE) {
                 printf("x");
             } else {
+                // printf("this is column %d row %d\n", col, row);
                 printf("%c", board[col][row]);
             }
         }
-        // printf("\n");
     }
+
+    // for (int row = mist_row + 3; row >= mist_row - 3; row--) {
+    //     // printf("%2d ", row); // Print row number
+    //     for (int col = mist_col + 3; col >= mist_col - 3; col--) {
+    //         if (col < 1 || col >= BOARD_SIZE || row < 1 || row >= BOARD_SIZE) {
+    //             printf("x");
+    //         } else {
+    //             printf("%c", board[col][row]);
+    //         }
+    //     }
+    //     // printf("\n");
+    // }
+
+    // for (int col = 1; col <= BOARD_SIZE; col++) {
+    //     printf("%c ", col + 'A' - 1);
+    // }
+    // printf("\n");
+
+    // for (int row = 1; row <= BOARD_SIZE; row++) {
+    //     printf("%2d ", row);
+    //     for (int col = 1; col <= BOARD_SIZE; col++) {
+    //         printf("%c ", board[col][row]);
+    //     }
+    //     printf("\n");
+    // }
 
     printf("\n");
 }
