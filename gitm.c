@@ -6,8 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-const int BOARD_SIZE = 20;
-char board[20][20];
+const int BOARD_SIZE = 19;
+char board[19][19];
 
 char command[256];
 int game_over = 0;
@@ -196,28 +196,28 @@ void resign() {
 
 void place(char c, int r, char player) {
     int num_c = c - 'A';
-    int num_r = r - 1;
+    // r = r - 1;
 
     // Check column and row validity
     if ((num_c < 0 || num_c >= BOARD_SIZE) || 
-        (num_r < 0 || num_r >= BOARD_SIZE)) {
+        (r < 0 || r >= BOARD_SIZE)) {
         printf("Invalid coordinate\n");
         // printf("inval %d, %d", num_c, r);
         return;
     } 
 
     // Check occupancy
-    if (board[num_c][num_r] != '.') {
+    if (board[num_c][r] != '.') {
         printf("Occupied coordinate\n");
         return;
     }
     
     // Place according to player
     if (player == 'B') {
-        board[num_c][num_r] = '#';
+        board[num_c][r] = '#';
         // printf("black %d, %d", num_c, r);
     } else {
-        board[num_c][num_r] = 'o';
+        board[num_c][r] = 'o';
     }
 
     // Add to history
@@ -229,13 +229,13 @@ void place(char c, int r, char player) {
     // Update mist centre
     // printf("%c is c, %d is num_c\n", c, num_c);
     int mist_col = 1 + (5 * (num_c * num_c) + 3 * num_c + 4) % 19;
-    int mist_row = 1 + (4 * (num_r * num_r) + 2 * num_r - 4) % 19;
+    int mist_row = 1 + (4 * (r * r) + 2 * r - 4) % 19;
     mist_centre[0] = mist_col;
     mist_centre[1] = mist_row;
     // printf("mc %d, %d \n", mist_centre[0], mist_centre[1]);
 
     // Check win
-    if (!isWon(num_c, num_r, player)) {
+    if (!isWon(num_c, r, player)) {
         // printf("not win\n");
         turn++;
     } else {
@@ -250,28 +250,30 @@ void view() {
     int mist_row = mist_centre[1];
     printf("%c%d,", c_mist_col, mist_row);
 
-    for (int row = mist_row - 3; row <= mist_row + 3; row++) {
-        for (int col = mist_col - 3; col <= mist_col + 3; col++) {
-            if (col < 0 || col >= BOARD_SIZE ||
-                row < 0 || row >= BOARD_SIZE) {
+    
+    // for (int row = mist_row + 3; row >= mist_row - 3; row--) {
+    //     for (int col = mist_col - 3; col <= mist_col + 3; col++) {
+    //         if (col < 0 || col >= BOARD_SIZE ||
+    //             row < 0 || row >= BOARD_SIZE) {
+    //             printf("x");
+    //         } else {
+    //             // printf("this is column %d row %d\n", col, row);
+    //             printf("%c", board[col][row]);
+    //         }
+    //     }
+    // }
+
+    for (int row = mist_row + 2; row >= mist_row - 4; row--) {
+        // printf("%2d ", row); // Print row number
+        for (int col = mist_col + 2; col >= mist_col - 4; col--) {
+            if (col < 0 || col >= BOARD_SIZE || row < 0 || row >= BOARD_SIZE) {
                 printf("x");
             } else {
                 printf("%c", board[col][row]);
             }
         }
+        // printf("\n");
     }
-
-    // for (int row = 0; row < BOARD_SIZE; row++) {
-    //     printf("%2d ", row + 1); // Print row number
-    //     for (int col = 0; col < BOARD_SIZE; col++) {
-    //         if (col == mist_col && row == mist_row) {
-    //             printf(".");
-    //         } else {
-    //             printf("%c", board[col][row]);
-    //         }
-    //     }
-    //     printf("\n");
-    // }
 
     printf("\n");
 }
