@@ -7,14 +7,16 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-const int BOARD_SIZE = 19;
+#define BOARD_SIZE  19
+#define MAX_TURN 361
+
 char board[21][21];
 
-char command[256];
+char command[512];
 int game_over = 0;
 int turn = 0;
 
-char history[362][4];
+char history[MAX_TURN][4];
 int hist_i = 0;
 
 int mist_centre[2] = {10, 10}; // Starts in middle
@@ -231,13 +233,15 @@ int check_validity(char* command) {
     int r = 0;
 
     for (int i = 7; command[i] != '\0'; i++) {
-        if (command[i] == ' ') {
-            return 1;
-        }
-
         if (command[i] <= '9' && command[i] >= '0') {
             r = r * 10 + command[i] - '0';
+        } else {
+            return 2;
         }
+    }
+
+    if (command[6] == '\0' || ' ') {
+        return 1;
     }
 
     if (command[7] == '0') {
@@ -299,7 +303,7 @@ int main(int argc, char* argv[]) {
         char player = who(turn);
 
         // tie
-        if (turn == 361) {
+        if (turn == MAX_TURN) {
             printf("Wow, a tie!\n");
             print_history();
             printf("Thank you for playing!\n");
