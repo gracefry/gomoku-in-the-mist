@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 const int BOARD_SIZE = 19;
 char board[21][21];
@@ -196,13 +197,11 @@ void resign() {
 
 void place(char c, int r, char player) {
     int num_c = c - 'A' + 1;
-    // r = r - 1;
 
     // Check column and row validity
     if ((num_c < 1 || num_c > BOARD_SIZE) || 
         (r < 1 || r > BOARD_SIZE)) {
         printf("Invalid coordinate\n");
-        // printf("inval %d, %d", num_c, r);
         return;
     } 
 
@@ -215,7 +214,6 @@ void place(char c, int r, char player) {
     // Place according to player
     if (player == 'B') {
         board[num_c][r] = '#';
-        // printf("black %d, %d", num_c, r);
     } else {
         board[num_c][r] = 'o';
     }
@@ -227,19 +225,15 @@ void place(char c, int r, char player) {
     hist_i++;
 
     // Update mist centre
-    // printf("%c is c, %d is num_c\n", c, num_c);
     int mist_col = 1 + (5 * (num_c * num_c) + 3 * num_c + 4) % 19;
     int mist_row = 1 + (4 * (r * r) + 2 * r - 4) % 19;
     mist_centre[0] = mist_col;
     mist_centre[1] = mist_row;
-    // printf("mc %d, %d \n", mist_centre[0], mist_centre[1]);
 
     // Check win
     if (!isWon(num_c, r, player)) {
-        // printf("not win\n");
         turn++;
     } else {
-        // printf("win\n");
         victory(player);
     }
 }
@@ -255,10 +249,8 @@ void view() {
             if (col < 1 || col > BOARD_SIZE ||
                 row < 1 || row > BOARD_SIZE) {
                 printf("x");
-                // printf("this is column %d row %d\n", col, row);
             } else {
                 printf("%c", board[col][row]);
-                // printf("this is column %d row %d\n", col, row);
             }
         }
     }
@@ -287,19 +279,33 @@ int main(int argc, char* argv[]) {
         char player = who(turn);
 
         // command switcher
-        if (!strncmp(command, "term", 4)) {
+        if (!strcmp(command, "term\n")) {
             term();
-        } else if (!strncmp(command, "who", 3)) {
+            continue;
+        }
+        if (!strcmp(command, "who\n")) {
             printf("%c\n", player);
-        } else if (!strncmp(command, "history", 7)) {
+            continue;
+        }
+        if (!strcmp(command, "history\n")) {
             printHistory();
-        } else if (!strncmp(command, "view", 4)) {
+            continue;
+        }
+        if (!strcmp(command, "view\n")) {
             view();
-        } else if (!strncmp(command, "resign", 6)) {
+            continue;
+        }
+        if (!strcmp(command, "resign\n")) {
             resign();
-        } else if (!strncmp(command, "place", 5)) {
-            char c = command[6];
+            continue;
+        }
+        if (!strncmp(command, "place ", 6)) {
+            char c = '\0';
             int r = 0;
+
+            if (isalpha(command[6])) {
+                c = command[6];
+            }
 
             for (int i = 7; command[i] != '\0'; i++) {
                 if (command[i] <= '9' && command[i] >= '0') {
@@ -307,10 +313,10 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-            place(c, r, player);
-
-        } else {
-            printf("Invalid!\n");
+            if (c != '\0' && r != 0) {
+                place(c, r, player);
+                continue;
+            }
         }
 
         // tie
@@ -320,6 +326,8 @@ int main(int argc, char* argv[]) {
             printf("Thank you for playing!\n");
             game_over = 1;
         }
+
+        printf("Invalid!\n");
     }
 
     return 0;
