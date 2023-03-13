@@ -19,7 +19,7 @@ int hist_i = 0;
 
 int mist_centre[2] = {10, 10}; // Starts in middle
 
-void makeBoard() {
+void make_board() {
     for (int col = 1; col <= BOARD_SIZE; col++) {
         for (int row = 1; row <= BOARD_SIZE; row++) {
             board[col][row] = '.';
@@ -27,7 +27,7 @@ void makeBoard() {
     }
 }
 
-void printHistory() {
+void print_history() {
     for (int i = 0; i < hist_i; i++) {
         printf("%s", history[i]);
     }
@@ -64,7 +64,7 @@ char who(int turn) {
     return (turn % 2 == 0) ? 'B' : 'W';;
 }
 
-int isWon(int num_c, int r, char player) {
+int won(int num_c, int r, char player) {
     int count = 1;
     char moku = (player == 'W') ? 'o' : '#';
 
@@ -184,7 +184,7 @@ void victory(char player) {
     char* name = (player == 'W') ? "White" : "Black";
 
     printf("%s wins!\n", name);
-    printHistory();
+    print_history();
     printf("Thank you for playing!\n");
     game_over = 1;
 }
@@ -196,20 +196,7 @@ void resign() {
 }
 
 void place(char c, int r, char player) {
-    int num_c = c - 'A' + 1;
-
-    // Check column and row validity
-    if ((num_c < 1 || num_c > BOARD_SIZE) || 
-        (r < 1 || r > BOARD_SIZE)) {
-        printf("Invalid coordinate\n");
-        return;
-    } 
-
-    // Check occupancy
-    if (board[num_c][r] != '.') {
-        printf("Occupied coordinate\n");
-        return;
-    }
+    int num_c = command[6] - 'A' + 1;
     
     // Place according to player
     if (player == 'B') {
@@ -231,11 +218,44 @@ void place(char c, int r, char player) {
     mist_centre[1] = mist_row;
 
     // Check win
-    if (!isWon(num_c, r, player)) {
+    if (!won(num_c, r, player)) {
         turn++;
     } else {
         victory(player);
     }
+}
+
+int check_validity(char* command) {
+    char c = command[6];
+    int num_c = c - 'A' + 1;
+    int r = 0;
+
+    for (int i = 7; command[i] != '\0'; i++) {
+        if (command[i] == ' ') {
+            return 1;
+        }
+
+        if (command[i] <= '9' && command[i] >= '0') {
+            r = r * 10 + command[i] - '0';
+        }
+    }
+
+    if (command[7] == '0') {
+        return 2;
+    }
+
+    if ((num_c < 1 || num_c > BOARD_SIZE) || 
+        (r < 1 || r > BOARD_SIZE)) {
+        return 2;
+    } 
+
+    if (board[num_c][r] != '.') {
+        return 3;
+    }
+
+    place(c, r, who(turn));
+
+    return 0;
 }
 
 void view() {
@@ -272,68 +292,56 @@ void view() {
 }
 
 int main(int argc, char* argv[]) {
-    makeBoard();
+    make_board();
 
     while (!game_over) {
         fgets(command, 256, stdin);
         char player = who(turn);
 
+        // tie
+        if (turn == 361) {
+            printf("Wow, a tie!\n");
+            print_history();
+            printf("Thank you for playing!\n");
+            exit(0);
+        }
+
         // command switcher
         if (!strcmp(command, "term\n")) {
             term();
             continue;
-        }
-        if (!strcmp(command, "who\n")) {
+        } else if (!strcmp(command, "who\n")) {
             printf("%c\n", player);
             continue;
-        }
-        if (!strcmp(command, "history\n")) {
-            printHistory();
+        } else if (!strcmp(command, "history\n")) {
+            print_history();
             continue;
-        }
-        if (!strcmp(command, "view\n")) {
+        } else if (!strcmp(command, "view\n")) {
             view();
             continue;
-        }
-        if (!strcmp(command, "resign\n")) {
+        } else if (!strcmp(command, "resign\n")) {
             resign();
             continue;
-        }
-        if (!strncmp(command, "place ", 6)) {
-            char c = '\0';
-            int r = 0;
+        } else if (!strncmp(command, "place ", 6)) {
+            switch (check_validity(command)) {
+                case 1:
+                    printf("Invalid!\n");
+                    break;
 
-            if (isalpha(command[6])) {
-                c = command[6];
+                case 2:
+                    printf("Invalid coordinate\n");
+                    break;
+
+                case 3:
+                    printf("Occupied coordinate\n");
+                    break;
+                
+                default:
+                    break;
             }
-
-            for (int i = 7; command[i] != '\0'; i++) {
-                if (command[i] <= '9' && command[i] >= '0') {
-                r = r * 10 + command[i] - '0';
-                }
-
-                if (command[i] == ' ') {
-                    r = -1;
-                    continue;
-                }
-            }
-
-            if (c != '\0' && r != -1) {
-                place(c, r, player);
-                continue;
-            }
+        } else {
+            printf("Invalid!\n");
         }
-
-        // tie
-        if (turn == 361) {
-            printf("Wow, a tie!\n");
-            printHistory();
-            printf("Thank you for playing!\n");
-            game_over = 1;
-            continue;
-        }
-
-        printf("Invalid!\n");
     }
 
     return 0;
