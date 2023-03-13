@@ -9,11 +9,10 @@
 
 #define BOARD_SIZE  19
 #define MAX_TURN 361
-#define BUFFER_SIZE 512
 
 char board[21][21];
 
-char command[BUFFER_SIZE];
+char command[512];
 int game_over = 0;
 int turn = 0;
 
@@ -230,38 +229,35 @@ void place(char c, int r, char player) {
 
 int check_validity(char* command) {
     char c = command[6];
-    int end = sizeof(command) - 1;
     int num_c = c - 'A' + 1;
     int r = 0;
 
-    // Check for white space
-    if ((command[6] || command[end] == '\n') || 
-        (command[6] || command[end] == ' ')) {
+    if (command[6] == '\n' || command[6] == ' ') {
         return 1;
     }
 
     for (int i = 7; command[i] != '\n'; i++) {
         if (command[i] == ' ') {
-            return 2; // Invalid 
+            return 1;
         }
         if (command[i] <= '9' && command[i] >= '0') {
             r = r * 10 + command[i] - '0';
         } else {
-            return 2; // Invalid coordinate
+            return 2;
         }
     }
 
     if (command[7] == '0') {
-        return 2; // Invalid coordinate
+        return 2;
     }
 
     if ((num_c < 1 || num_c > BOARD_SIZE) || 
         (r < 1 || r > BOARD_SIZE)) {
-        return 2; // Invalid coordinate
+        return 2;
     } 
 
     if (board[num_c][r] != '.') {
-        return 3; // Occupied coordinate
+        return 3;
     }
 
     place(c, r, who(turn));
