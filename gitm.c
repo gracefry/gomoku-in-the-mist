@@ -232,7 +232,7 @@ int check_validity(char* command) {
     int num_c = c - 'A' + 1;
     int r = 0;
 
-    if (command[6] == '\n') {
+    if (command[6] == '\n' || command[6] == ' ') {
         return 1;
     }
 
