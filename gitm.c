@@ -233,7 +233,7 @@ int check_validity(char* command) {
     int r = 0;
 
     if (command[6] == '\n') {
-        return 2;
+        return 1;
     }
 
     for (int i = 7; command[i] != '\n'; i++) {
