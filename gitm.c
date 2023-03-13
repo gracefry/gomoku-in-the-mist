@@ -311,9 +311,14 @@ int main(int argc, char* argv[]) {
                 if (command[i] <= '9' && command[i] >= '0') {
                 r = r * 10 + command[i] - '0';
                 }
+
+                if (command[i] == ' ') {
+                    r = -1;
+                    continue;
+                }
             }
 
-            if (c != '\0' && r != 0) {
+            if (c != '\0' && r != -1) {
                 place(c, r, player);
                 continue;
             }
@@ -325,6 +330,7 @@ int main(int argc, char* argv[]) {
             printHistory();
             printf("Thank you for playing!\n");
             game_over = 1;
+            continue;
         }
 
         printf("Invalid!\n");
