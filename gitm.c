@@ -240,7 +240,7 @@ int check_validity(char* command) {
         if (command[i] <= '9' && command[i] >= '0') {
             r = r * 10 + command[i] - '0';
         } else {
-            return 2;
+            return 1;
         }
     }
 
