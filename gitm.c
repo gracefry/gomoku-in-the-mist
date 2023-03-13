@@ -232,8 +232,8 @@ int check_validity(char* command) {
     int num_c = c - 'A' + 1;
     int r = 0;
 
-    if (command[6] == '\0') {
-        return 1;
+    if (command[6] == '\n') {
+        return 2;
     }
 
     for (int i = 7; command[i] != '\n'; i++) {
