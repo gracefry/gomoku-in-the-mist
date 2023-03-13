@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 const int BOARD_SIZE = 19;
-char board[20][20];
+char board[21][21];
 
 char command[256];
 int game_over = 0;
@@ -69,7 +69,7 @@ int isWon(int num_c, int r, char player) {
 
     // Check vertical increasing
     for (int row = (r + 1); 
-        row < (r + 5) || row < BOARD_SIZE - 1; row++) {
+        row < (r + 5) || row < BOARD_SIZE; row++) {
         // printf("Check vertical increasing\n");
         if (board[num_c][row] == moku) {
             count++;
@@ -263,30 +263,18 @@ void view() {
         }
     }
 
-    // for (int row = mist_row + 3; row >= mist_row - 3; row--) {
-    //     // printf("%2d ", row); // Print row number
-    //     for (int col = mist_col + 3; col >= mist_col - 3; col--) {
-    //         if (col < 1 || col >= BOARD_SIZE || row < 1 || row >= BOARD_SIZE) {
-    //             printf("x");
-    //         } else {
-    //             printf("%c", board[col][row]);
-    //         }
-    //     }
-    //     // printf("\n");
+    // for (int col = 1; col <= BOARD_SIZE; col++) {
+    //     printf("%c ", col + 'A' - 1);
     // }
+    // printf("\n");
 
-    for (int col = 1; col <= BOARD_SIZE; col++) {
-        printf("%c ", col + 'A' - 1);
-    }
-    printf("\n");
-
-    for (int row = 1; row <= BOARD_SIZE; row++) {
-        printf("%2d ", row);
-        for (int col = 1; col <= BOARD_SIZE; col++) {
-            printf("%c ", board[col][row]);
-        }
-        printf("\n");
-    }
+    // for (int row = 1; row <= BOARD_SIZE; row++) {
+    //     printf("%2d ", row);
+    //     for (int col = 1; col <= BOARD_SIZE; col++) {
+    //         printf("%c ", board[col][row]);
+    //     }
+    //     printf("\n");
+    // }
 
     printf("\n");
 }
