@@ -232,16 +232,16 @@ int check_validity(char* command) {
     int num_c = c - 'A' + 1;
     int r = 0;
 
-    for (int i = 7; command[i] != '\0'; i++) {
+    if (command[6] == '\0' || command[6] == ' ') {
+        return 1;
+    }
+
+    for (int i = 7; command[i] != '\n'; i++) {
         if (command[i] <= '9' && command[i] >= '0') {
             r = r * 10 + command[i] - '0';
         } else {
             return 2;
         }
-    }
-
-    if (command[6] == '\0' || ' ') {
-        return 1;
     }
 
     if (command[7] == '0') {
