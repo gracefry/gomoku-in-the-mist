@@ -228,42 +228,78 @@ void place(char c, int r, char player) {
 }
 
 int check_validity(char* command) {
+    int len = strlen(command);
+    
+    // Check for trailing whitespace
+    if (command[len - 1] == '\n' || command[len - 1] == ' ') {
+        return 1; // Invalid command
+    }
+    
+    // Check for correct format
+    if (len != 8 || command[6] < 'A' || command[6] > 'S') {
+        return 2; // Invalid coordinate
+    }
+    
+    int r = 0;
+    for (int i = 7; i < len - 1; i++) {
+        if (command[i] < '0' || command[i] > '9') {
+            return 2; // Invalid coordinate
+        }
+        r = r * 10 + (command[i] - '0');
+    }
+    if (r < 1 || r > 19) {
+        return 2; // Invalid coordinate
+    }
+    
+    // Check if coordinate is occupied
     char c = command[6];
     int num_c = c - 'A' + 1;
-    int r = 0;
-
-    if (command[6] == '\n' || command[6] == ' ') {
-        return 1;
-    }
-
-    for (int i = 7; command[i] != '\n'; i++) {
-        if (command[i] == ' ') {
-            return 1;
-        }
-        if (command[i] <= '9' && command[i] >= '0') {
-            r = r * 10 + command[i] - '0';
-        } else {
-            return 2;
-        }
-    }
-
-    if (command[7] == '0') {
-        return 2;
-    }
-
-    if ((num_c < 1 || num_c > BOARD_SIZE) || 
-        (r < 1 || r > BOARD_SIZE)) {
-        return 2;
-    } 
-
     if (board[num_c][r] != '.') {
-        return 3;
+        return 3; // Occupied coordinate
     }
 
+    // Place the piece if all checks pass
     place(c, r, who(turn));
-
-    return 0;
+    return 0; // Valid command
 }
+
+// int check_validity(char* command) {
+//     char c = command[6];
+//     int num_c = c - 'A' + 1;
+//     int r = 0;
+
+//     if (command[6] == '\n' || command[6] == ' ') {
+//         return 1; // Invalid
+//     }
+
+//     for (int i = 7; command[i] != '\n'; i++) {
+//         if (command[i] == ' ') {
+//             return 1; // Invalid
+//         }
+//         if (command[i] <= '9' && command[i] >= '0') {
+//             r = r * 10 + command[i] - '0';
+//         } else {
+//             return 2; // Invalid coordinate
+//         }
+//     }
+
+//     if (command[7] == '0') {
+//         return 2; // Invalid coordinate
+//     }
+
+//     if ((num_c < 1 || num_c > BOARD_SIZE) || 
+//         (r < 1 || r > BOARD_SIZE)) {
+//         return 2; // Invalid coordinate
+//     } 
+
+//     if (board[num_c][r] != '.') {
+//         return 3; // Occupied coordinate
+//     }
+
+//     place(c, r, who(turn));
+
+//     return 0;
+// }
 
 void view() {
     int mist_col = mist_centre[0];
