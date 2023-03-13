@@ -230,7 +230,7 @@ void place(char c, int r, char player) {
 
 int check_validity(char* command) {
     char c = command[6];
-    int end = strlen(c) - 1;
+    int end = sizeof(c) - 1;
     int num_c = c - 'A' + 1;
     int r = 0;
 
