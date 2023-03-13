@@ -69,7 +69,7 @@ int isWon(int num_c, int r, char player) {
 
     // Check vertical increasing
     for (int row = (r + 1); 
-        row < (r + 5) || row < BOARD_SIZE; row++) {
+        row < (r + 5) || row < BOARD_SIZE - 1; row++) {
         // printf("Check vertical increasing\n");
         if (board[num_c][row] == moku) {
             count++;
@@ -199,8 +199,8 @@ void place(char c, int r, char player) {
     // r = r - 1;
 
     // Check column and row validity
-    if ((num_c < 0 || num_c >= BOARD_SIZE) || 
-        (r < 0 || r >= BOARD_SIZE)) {
+    if ((num_c < 1 || num_c > BOARD_SIZE) || 
+        (r < 1 || r > BOARD_SIZE)) {
         printf("Invalid coordinate\n");
         // printf("inval %d, %d", num_c, r);
         return;
@@ -275,18 +275,18 @@ void view() {
     //     // printf("\n");
     // }
 
-    // for (int col = 1; col <= BOARD_SIZE; col++) {
-    //     printf("%c ", col + 'A' - 1);
-    // }
-    // printf("\n");
+    for (int col = 1; col <= BOARD_SIZE; col++) {
+        printf("%c ", col + 'A' - 1);
+    }
+    printf("\n");
 
-    // for (int row = 1; row <= BOARD_SIZE; row++) {
-    //     printf("%2d ", row);
-    //     for (int col = 1; col <= BOARD_SIZE; col++) {
-    //         printf("%c ", board[col][row]);
-    //     }
-    //     printf("\n");
-    // }
+    for (int row = 1; row <= BOARD_SIZE; row++) {
+        printf("%2d ", row);
+        for (int col = 1; col <= BOARD_SIZE; col++) {
+            printf("%c ", board[col][row]);
+        }
+        printf("\n");
+    }
 
     printf("\n");
 }
