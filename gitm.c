@@ -9,14 +9,14 @@
 
 #define BOARD_SIZE  19
 #define MAX_TURN 361 // 19 * 19
-#define MAX_COMMAND_SIZE 10 // place S19
+#define BUFFER_SIZE 256 // place S19
 #define COORD_SIZE 4 // S19 + \0
 #define TRUE 1
 #define FALSE 0
 
 char board[BOARD_SIZE + 1][BOARD_SIZE + 1];
 
-char command[MAX_COMMAND_SIZE];
+char command[BUFFER_SIZE];
 int game_over = FALSE;
 int turn = 0;
 
@@ -304,7 +304,7 @@ void view() {
 
 int get_input() {
     int has_space = 0;
-    while (fgets(command, MAX_COMMAND_SIZE, stdin) != NULL) {
+    while (fgets(command, BUFFER_SIZE, stdin) != NULL) {
         for (int i = 0; command[i] != '\0'; i++) {
             if (command[i] == ' ') {
                 if (has_space) {
