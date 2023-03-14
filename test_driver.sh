@@ -3,7 +3,7 @@
 # Finally, run the script with ./test_driver.sh.
 
 # Compile the gitm program
-gcc -o gitm gitm.c
+gcc --coverage gitm.c -o gitm
 
 # Loop through all the .in files in the current directory
 for test_input in tests/*.in; do
@@ -28,5 +28,5 @@ for test_input in tests/*.in; do
     
 done
 
-# Remove the gitm program
-rm gitm
+gcov gitm
+gcovr --html-details gitm.html

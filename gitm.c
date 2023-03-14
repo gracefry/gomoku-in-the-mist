@@ -305,18 +305,9 @@ int main(int argc, char* argv[]) {
         fgets(command, 256, stdin);
         char player = who(turn);
 
-        // tie
-        if (turn == MAX_TURN) {
-            printf("Wow, a tie!\n");
-            print_history();
-            printf("Thank you for playing!\n");
-            exit(0);
-        }
-
         // command switcher
         if (!strcmp(command, "term\n")) {
             term();
-            continue;
         } else if (!strcmp(command, "who\n")) {
             printf("%c\n", player);
             continue;
@@ -334,20 +325,24 @@ int main(int argc, char* argv[]) {
                 case 1:
                     printf("Invalid!\n");
                     break;
-
                 case 2:
                     printf("Invalid coordinate\n");
                     break;
-
                 case 3:
                     printf("Occupied coordinate\n");
                     break;
-                
                 default:
                     break;
             }
         } else {
             printf("Invalid!\n");
+        }
+        // tie
+        if (turn == MAX_TURN) {
+            printf("Wow, a tie!\n");
+            print_history();
+            printf("Thank you for playing!\n");
+            game_over = 1;
         }
     }
 
