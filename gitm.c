@@ -14,7 +14,7 @@
 #define TRUE 1
 #define FALSE 0
 
-char board[BOARD_SIZE + 1][BOARD_SIZE + 1];
+char board[BOARD_SIZE + 2][BOARD_SIZE + 2];
 
 char command[BUFFER_SIZE];
 int game_over = FALSE;
