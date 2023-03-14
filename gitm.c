@@ -8,15 +8,19 @@
 #include <ctype.h>
 
 #define BOARD_SIZE  19
-#define MAX_TURN 361
+#define MAX_TURN 361 // 19 * 19
+#define MAX_COMMAND_SIZE 10 // place S19
+#define COORD_SIZE 4 // S19 + \0
+#define TRUE 1
+#define FALSE 0
 
-char board[21][21];
+char board[BOARD_SIZE + 1][BOARD_SIZE + 1];
 
-char command[512];
-int game_over = 0;
+char command[MAX_COMMAND_SIZE];
+int game_over = FALSE;
 int turn = 0;
 
-char history[MAX_TURN][4];
+char history[MAX_TURN][COORD_SIZE];
 int hist_i = 0;
 
 int mist_centre[2] = {10, 10}; // Starts in middle
@@ -298,12 +302,38 @@ void view() {
     printf("\n");
 }
 
+int get_input() {
+    int has_space = 0;
+    while (fgets(command, MAX_COMMAND_SIZE, stdin) != NULL) {
+        for (int i = 0; command[i] != '\0'; i++) {
+            if (command[i] == ' ') {
+                if (has_space) {
+                    has_space = 0;
+                    return 1;
+                } else {
+                    has_space = 1;
+                }
+            }
+
+            if (command[i] == '\n') {
+                return 0;
+            }
+        }
+    }
+
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
     make_board();
 
     while (!game_over) {
-        fgets(command, 256, stdin);
         char player = who(turn);
+        
+        while (get_input()) {
+            printf("Invalid!\n");
+            get_input();
+        }
 
         // tie
         if (turn == MAX_TURN) {
